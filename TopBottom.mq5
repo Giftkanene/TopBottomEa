@@ -29,6 +29,69 @@ input double  PointDifferenceLimit   = 50.0;            //Max spread allowed in 
 input int     Magic                  = 1000;
 input string  CommentName            ="TopBottomEa";
 
+//+------------------------------------------------------------------+
+//| Input Dependent Variables                                        |
+//+------------------------------------------------------------------+
+int     VolatilityThreshold   = Volatility;     // volatility settings 
+int     StopLossPoints        = StopLoss;       // sl in pips           
+int     TakeProfitPoints      = Profit;         // tp in pips 
+int     MaxBandWidth          = 1000;           // bollinger max bandwidth
+int     MinBandwidth          = 150;            // bollinger min bandwidth 
+double  CalculateLotSize      = 0.0;            // dynamic lot calculations 
+
+//+------------------------------------------------------------------+
+//| Account/Trading Parameters                                       |
+//+------------------------------------------------------------------+
+double  accountBalanceDivisor   = 1000000;      //risk calculations 
+int     maxSlippage             = 30;           //max allowed slippage 
+bool    tradingAllowed          = true;         //master trading switch
+
+//+------------------------------------------------------------------+
+//| Indicator parameteres                                            |
+//+------------------------------------------------------------------+
+
+int  wraThreshold            = 5;
+int  handleBollinger;
+int  handleWRP;
+
+//+------------------------------------------------------------------+
+//| Time Management                                                  |
+//+------------------------------------------------------------------+
+int         startTradingHour1   = 20;
+int         endTradingHour1     = 24;
+int         startTradingHour2   = 0;
+int         endTradingHour2     = 3;
+datetime    lastSignalTime      = 0;
+datetime    lastBarTime         = 0;      // current bar timestamp
+MqlDateTime BrokerTime, GMTTime;          // Time Structures 
+
+
+//+------------------------------------------------------------------+
+//| Position Tracking                                                |
+//+------------------------------------------------------------------+
+int buyPositionCount  = 0;      // we will use these to check how many buy or sell positions are there before placing an order 
+int sellPositionCount = 0;  
+
+//+------------------------------------------------------------------+
+//| lot and price managment                                          |
+//+------------------------------------------------------------------+
+double totalBuyLots     = 0.0;      // total buy volume 
+double totalSellLots    = 0.0;      // total sell volume 
+double buyPrice         = 0.0;      // avg buy entry
+double sellPrice        = 0.0;      // avg sell entry 
+double buyStopLoss      = 0.0;      // buy sl price 
+double sellStopLoss     = 0.0;      // sell sl price 
+
+//+------------------------------------------------------------------+
+//| Profit Tracking                                                  |
+//+------------------------------------------------------------------+
+double totalBuyProfit   = 0.0;    // Buy PnL
+double totalSellProfit  = 0.0;    // Sell PnL
+
+
+
+
+
 
 
 
