@@ -32,12 +32,12 @@ input string  CommentName            ="TopBottomEa";
 //+------------------------------------------------------------------+
 //| Input Dependent Variables                                        |
 //+------------------------------------------------------------------+
-int     VolatilityThreshold   = Volatility;     // volatility settings 
-int     StopLossPoints        = StopLoss;       // sl in pips           
-int     TakeProfitPoints      = Profit;         // tp in pips 
-int     MaxBandWidth          = 1000;           // bollinger max bandwidth
-int     MinBandwidth          = 150;            // bollinger min bandwidth 
-double  CalculateLotSize      = 0.0;            // dynamic lot calculations 
+int     volatilityThreshold   = Volatility;     // volatility settings 
+int     stopLossPoints        = StopLoss;       // sl in pips           
+int     takeProfitPoints      = Profit;         // tp in pips 
+int     maxBandWidth          = 1000;           // bollinger max bandwidth
+int     minBandwidth          = 150;            // bollinger min bandwidth 
+double  calculateLotSize      = 0.0;            // dynamic lot calculations 
 
 //+------------------------------------------------------------------+
 //| Account/Trading Parameters                                       |
@@ -96,6 +96,65 @@ int OnInit(){
 
   trade.SetExpertMagicNumber(Magic);
   ChartSetInteger(0,CHART_SHOW_GRID,false); // removes the gridlines from the chart the ea is running on 
+
+  //function to set up parameter switching 
+  if(ParameterSwitching){
+    if(StringFind(_Symbol,"CHFSGD",0) < 0 && StringFind(_Symbol,"GBPSGD",0) < 0){
+      // if these pairs are not found then these values should be used 
+      volatilityThreshold   = Volatility;
+      stopLossPoints = StopLoss;
+      takeProfitPoints = Profit;
+      maxBandWidth = 1000;
+      minBandwidth = 150;
+    }
+    else{
+      // if the pairs are found then these values will be set 
+      volatilityThreshold = 35;
+      stopLossPoints = StopLoss;
+      takeProfitPoints = Profit;
+      maxBandWidth = 1000;
+      minBandwidth = 0;
+    }
+  }
+  else{
+    if(StringFind(_Symbol,"GBPCAD",0) >= 0){
+      // default values for GBPCAD
+      volatilityThreshold = 110;
+      stopLossPoints = 800;
+      takeProfitPoints = 300;
+      maxBandWidth = 1000;
+      minBandwidth = 150;
+    }
+    if(StringFind(_Symbol,"EURSGD",0) >= 0){
+      volatilityThreshold = 140;
+      stopLossPoints = 700;
+      takeProfitPoints = 160;
+      maxBandWidth = 1000;
+      minBandwidth = 150;
+    }
+    if(StringFind(_Symbol,"GBPCHF",0) >= 0){
+      volatilityThreshold = 110;
+      stopLossPoints = 600;
+      takeProfitPoints = 200;
+      maxBandWidth = 1000;
+      minBandwidth = 150;
+    }
+    if(StringFind(_Symbol,"CHFSGD",0) >= 0){
+      volatilityThreshold = 60;
+      stopLossPoints = 700;
+      takeProfitPoints = 160;
+      maxBandWidth = 1000;
+      minBandwidth = 0;
+    }
+    if(StringFind(_Symbol,"GBPSGD",0) >= 0){
+      volatilityThreshold = 35;
+      stopLossPoints = 700;
+      takeProfitPoints = 160;
+      maxBandWidth = 1000;
+      minBandwidth = 0;
+    }
+  }
+
 
    return(INIT_SUCCEEDED);
   }
