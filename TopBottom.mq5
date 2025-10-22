@@ -89,22 +89,14 @@ double totalBuyProfit   = 0.0;    // Buy PnL
 double totalSellProfit  = 0.0;    // Sell PnL
 
 
-
-
-
-
-
-
-
-
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
-int OnInit()
-  {
-//---
-   
-//---
+int OnInit(){
+
+  trade.SetExpertMagicNumber(Magic);
+  ChartSetInteger(0,CHART_SHOW_GRID,false); // removes the gridlines from the chart the ea is running on 
+
    return(INIT_SUCCEEDED);
   }
 //+------------------------------------------------------------------+
