@@ -173,15 +173,31 @@ int OnInit(){
 //+------------------------------------------------------------------+
 //| Expert deinitialization function                                 |
 //+------------------------------------------------------------------+
-void OnDeinit(const int reason)
-  {
-//---
+void OnDeinit(const int reason){
+    // remove all the objects from the charts
+    ObjectDelete(0,"tb_");
    
   }
 //+------------------------------------------------------------------+
 //| Expert tick function                                             |
 //+------------------------------------------------------------------+
-void OnTick()
-  {
+void OnTick(){
+
+  // variables 
+  double upperBolligerBand, lowerBolllingerBand, currentWPR, indBuffer[];
+  
+  // copy the indicater values into the defined arrays
+  CopyBuffer(handleBollinger,1,0,1,indBuffer);  // MODE_UPPER
+  upperBolligerBand = indBuffer[0];
+
+  CopyBuffer(handleBollinger,2,0,1,indBuffer);  // MODE_LOWER
+  lowerBolllingerBand = indBuffer[0];
+
+  CopyBuffer(handleWRP,0,0,1,indBuffer);      //WPR value
+  currentWPR = indBuffer[0];
+
+
+  // buy and sell logic
+
    
-  }
+}
