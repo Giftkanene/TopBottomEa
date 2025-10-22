@@ -25,7 +25,8 @@ input bool    ParameterSwitching     = false;           //Different settings for
 input int     Volatility             = 110;             //Volutility for williams %R period
 input int     StopLoss               = 800;
 input int     Profit                 = 300;
-input double  PointDifferenceLimit   = 50.0;            //Max spread allowed in points 
+input double  PointDifferenceLimit   = 50.0;            //Max spread allowed in points
+input bool    DisplaySwitch          = true; 
 input int     Magic                  = 1000;
 input string  CommentName            ="TopBottomEa";
 
@@ -154,9 +155,20 @@ int OnInit(){
       minBandwidth = 0;
     }
   }
+    // hide the indicators 
+    TesterHideIndicators(true);
 
+    // asign indicator handles 
+    handleBollinger = iBands(_Symbol,PERIOD_M1,20,0,2.0,PRICE_CLOSE);
+    handleWRP       = iWPR(_Symbol,PERIOD_M1,volatilityThreshold);
 
-   return(INIT_SUCCEEDED);
+    //show the display panel
+    if(DisplaySwitch){
+      //CreateDisplayPanel();
+    }
+
+  
+  return(INIT_SUCCEEDED);
   }
 //+------------------------------------------------------------------+
 //| Expert deinitialization function                                 |
