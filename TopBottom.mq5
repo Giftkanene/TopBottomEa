@@ -196,8 +196,29 @@ void OnTick(){
   CopyBuffer(handleWRP,0,0,1,indBuffer);      //WPR value
   currentWPR = indBuffer[0];
 
+  //check if the spread allows trading 
+  if(SymbolInfoInteger(_Symbol,SYMBOL_SPREAD) <= PointDifferenceLimit){
+    tradingAllowed = true;
+  }
+  else{
+    tradingAllowed = false;
+  }
 
-  // buy and sell logic
+  // stores the timestamp of the previous candle on the spacified timeframe 
+  lastBarTime = iTime(_Symbol,PERIOD_M1,1);
+
+  //lets calculate the compoundinterest if it is set to true 
+  if(CompoundIntrestSwitch == true ){
+    calculateLotSize = AccountInfoDouble(ACCOUNT_EQUITY) * Risk / accountBalanceDivisor;
+    calculateLotSize = NormalizeDouble(calculateLotSize,2);
+  }
+  else{
+    calculateLotSize = Lots; 
+  }
+
+
+
+  
 
    
 }
