@@ -51,7 +51,7 @@ bool    tradingAllowed          = true;         //master trading switch
 //| Indicator parameteres                                            |
 //+------------------------------------------------------------------+
 
-int  wraThreshold            = 5;
+int  wprThreshold            = 5;
 int  handleBollinger;
 int  handleWRP;
 
@@ -216,9 +216,82 @@ void OnTick(){
     calculateLotSize = Lots; 
   }
 
+  // get the broker time
+  TimeCurrent(BrokerTime);
+  TimeGMT(GMTTime);
 
+  double Ask = SymbolInfoDouble(_symbol,SYMBOL_ASK);
+  double Bid = SymbolInfoDouble(_Symbol,SYMBOL_BID);
+  double point = _Point;
 
-  
-
-   
+  if(MQLInfoInteger(MQL_TESTER) == true){
+    if((BrokerTime.hour >= startTradingHour1 && BrokerTime.hour <= endTradingHour1) ||
+      (BrokerTime.hour >= startTradingHour2 && BrokerTime.hour <= endTradingHour2)){
+        
+      if(upperBolligerBand - lowerBolllingerBand < maxBandWidth * point){
+        if(upperBolligerBand - lowerBolllingerBand > minBandwidth * point){
+          if(sellPositionCount + buyPositionCount < 1 && tradingAllowed == 1){
+            //BUY LOGIC
+            if(currentWPR < wprThreshold - 100 && lastSignalTime != lastBarTime){
+              double margin;
+              if(OrderCalcMargin(ORDER_TYPE_BUY,_Symbol,calculateLotSize,Ask,margin) && 
+                AccountInfoDouble(ACCOUNT_MARGIN_FREE) > margin){
+                
+                double sl = NormalizeDouble(Ask - stopLossPoints * point, _Digits);
+                trade.Buy(calculateLotSize,_Symbol,Ask,sl,0,CommentName);
+                lastSignalTime = lastBarTime;
+                
+              }
+            }
+            //SELL LOGIC
+            if(currentWPR > -wprThreshold && lastSignalTime != lastBarTime){
+              double margin;
+              if(OrderCalcMargin(ORDER_TYPE_SELL,_Symbol,calculateLotSize,Bid,margin) && 
+                AccountInfoDouble(ACCOUNT_MARGIN_FREE) > margin){
+                
+                double sl = NormalizeDouble(Bid + stopLossPoints * point, _Digits);
+                trade.Sell(calculateLotSize,_Symbol,Bid,sl,0,CommentName);
+                lastSignalTime = lastBarTime;
+                
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  else{ // for a live account 
+    if(GMTTime.hour >= 18 || GMTTime.hour <= 1){
+      if(upperBolligerBand - lowerBolllingerBand < maxBandWidth * point){
+        if(upperBolligerBand - lowerBolllingerBand > minBandwidth * point){
+          if(sellPositionCount + buyPositionCount < 1 && tradingAllowed == 1){
+            //BUY LOGIC
+            if(currentWPR < wprThreshold - 100 && lastSignalTime != lastBarTime){
+              double margin;
+              if(OrderCalcMargin(ORDER_TYPE_BUY,_Symbol,calculateLotSize,Ask,margin) && 
+                AccountInfoDouble(ACCOUNT_MARGIN_FREE) > margin){
+                
+                double sl = NormalizeDouble(Ask - stopLossPoints * point, _Digits);
+                trade.Buy(calculateLotSize,_Symbol,Ask,sl,0,CommentName);
+                lastSignalTime = lastBarTime;
+                
+              }
+            }
+            //SELL LOGIC
+            if(currentWPR > -wprThreshold && lastSignalTime != lastBarTime){
+              double margin;
+              if(OrderCalcMargin(ORDER_TYPE_SELL,_Symbol,calculateLotSize,Bid,margin) && 
+                AccountInfoDouble(ACCOUNT_MARGIN_FREE) > margin){
+                
+                double sl = NormalizeDouble(Bid + stopLossPoints * point, _Digits);
+                trade.Sell(calculateLotSize,_Symbol,Bid,sl,0,CommentName);
+                lastSignalTime = lastBarTime;
+                
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
