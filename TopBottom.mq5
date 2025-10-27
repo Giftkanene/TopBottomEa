@@ -220,17 +220,19 @@ void OnTick(){
   TimeCurrent(BrokerTime);
   TimeGMT(GMTTime);
 
-  double Ask = SymbolInfoDouble(_symbol,SYMBOL_ASK);
+  double Ask = SymbolInfoDouble(_Symbol,SYMBOL_ASK);
   double Bid = SymbolInfoDouble(_Symbol,SYMBOL_BID);
   double point = _Point;
 
   if(MQLInfoInteger(MQL_TESTER) == true){
+    
     if((BrokerTime.hour >= startTradingHour1 && BrokerTime.hour <= endTradingHour1) ||
       (BrokerTime.hour >= startTradingHour2 && BrokerTime.hour <= endTradingHour2)){
         
       if(upperBolligerBand - lowerBolllingerBand < maxBandWidth * point){
         if(upperBolligerBand - lowerBolllingerBand > minBandwidth * point){
           if(sellPositionCount + buyPositionCount < 1 && tradingAllowed == 1){
+
             //BUY LOGIC
             if(currentWPR < wprThreshold - 100 && lastSignalTime != lastBarTime){
               double margin;
@@ -243,6 +245,7 @@ void OnTick(){
                 
               }
             }
+
             //SELL LOGIC
             if(currentWPR > -wprThreshold && lastSignalTime != lastBarTime){
               double margin;
@@ -262,9 +265,11 @@ void OnTick(){
   }
   else{ // for a live account 
     if(GMTTime.hour >= 18 || GMTTime.hour <= 1){
+
       if(upperBolligerBand - lowerBolllingerBand < maxBandWidth * point){
         if(upperBolligerBand - lowerBolllingerBand > minBandwidth * point){
           if(sellPositionCount + buyPositionCount < 1 && tradingAllowed == 1){
+
             //BUY LOGIC
             if(currentWPR < wprThreshold - 100 && lastSignalTime != lastBarTime){
               double margin;
@@ -277,6 +282,7 @@ void OnTick(){
                 
               }
             }
+
             //SELL LOGIC
             if(currentWPR > -wprThreshold && lastSignalTime != lastBarTime){
               double margin;
@@ -291,6 +297,16 @@ void OnTick(){
             }
           }
         }
+      }
+    }
+  }
+  // lets close trades if the WPR condition is met 
+  if(buyPositionCount > 0 && tradingAllowed == 1 && currentWPR > (-wprThreshold)){
+    for(int i =  PositionsTotal() - 1; i >= 0; --i){
+      if(posinfo.SelectByTicket(i)){
+        if(posinfo.Symbol() == _Symbol && posinfo.Magic() == Magic)
+        if(posinfo.PositionType() == POSITION_TYPE_BUY)
+          trade.PositionClose(posinfo.Ticket(),maxSlippage);
       }
     }
   }
