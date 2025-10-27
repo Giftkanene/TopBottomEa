@@ -320,5 +320,24 @@ void OnTick(){
       }
     }
   }
-  
+  // close buy postions on take profit 
+  if(buyPositionCount > 0 && tradingAllowed == 1 && (Bid - buyPrice) > (takeProfitPoints * point)){
+    for(int k =  PositionsTotal() - 1; k >= 0; --k){
+      if(posinfo.SelectByTicket(k)){
+        if(posinfo.Symbol() == _Symbol && posinfo.Magic() == Magic)
+        if(posinfo.PositionType() == POSITION_TYPE_BUY)
+          trade.PositionClose(posinfo.Ticket(),maxSlippage);
+      }
+    }
+  }
+   // close sell postions on take profit 
+  if(buyPositionCount > 0 && tradingAllowed == 1 && (sellPrice - Ask) > (takeProfitPoints * point)){
+    for(int m =  PositionsTotal() - 1; m >= 0; --m){
+      if(posinfo.SelectByTicket(m)){
+        if(posinfo.Symbol() == _Symbol && posinfo.Magic() == Magic)
+        if(posinfo.PositionType() == POSITION_TYPE_SELL)
+          trade.PositionClose(posinfo.Ticket(),maxSlippage);
+      }
+    }
+  } 
 }
