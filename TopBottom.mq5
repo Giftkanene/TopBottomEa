@@ -300,7 +300,7 @@ void OnTick(){
       }
     }
   }
-  // lets close trades if the WPR condition is met 
+  // lets close buy trades if the WPR condition is met 
   if(buyPositionCount > 0 && tradingAllowed == 1 && currentWPR > (-wprThreshold)){
     for(int i =  PositionsTotal() - 1; i >= 0; --i){
       if(posinfo.SelectByTicket(i)){
@@ -310,4 +310,15 @@ void OnTick(){
       }
     }
   }
+  // lets close sell trades if the WPR conditions is met 
+  if(sellPositionCount > 0 && tradingAllowed == 1 && currentWPR < (wprThreshold - 100)){
+    for(int j =  PositionsTotal() - 1; j >= 0; --j){
+      if(posinfo.SelectByTicket(j)){
+        if(posinfo.Symbol() == _Symbol && posinfo.Magic() == Magic)
+        if(posinfo.PositionType() == POSITION_TYPE_SELL)
+          trade.PositionClose(posinfo.Ticket(),maxSlippage);
+      }
+    }
+  }
+  
 }
