@@ -183,6 +183,7 @@ void OnDeinit(const int reason){
 //+------------------------------------------------------------------+
 void OnTick(){
 
+
   // variables 
   double upperBolligerBand, lowerBolllingerBand, currentWPR, indBuffer[];
   
@@ -340,4 +341,49 @@ void OnTick(){
       }
     }
   } 
+}
+ 
+//+------------------------------------------------------------------+
+//| update position function                                         |
+//+------------------------------------------------------------------+
+
+int UpdatePosition(){
+  //reset all counters 
+  buyPositionCount  = 0;
+  sellPositionCount = 0;
+  totalBuyLots = 0;
+  totalSellLots = 0;
+  totalBuyProfit = 0;
+  totalSellProfit = 0;
+  buyPrice = 0;
+  sellPrice = 0;
+  buyStopLoss = 0;
+  sellStopLoss = 0;
+
+  // loop though all the open positions 
+  for(int i = PositionsTotal() - 1; i >= 0 ; i--){
+    posinfo.SelectByIndex(i);
+    ulong ticket = posinfo.Ticket();
+    if(posinfo.Symbol() == _Symbol && posinfo.Magic() == Magic){
+
+      if(posinfo.PositionType() == POSITION_TYPE_SELL){
+        ++sellPositionCount;
+        double volume = posinfo.Volume();
+        totalSellLots += volume;
+        totalBuyProfit += posinfo.Profit() + posinfo.Comment() + posinfo.Swap();
+        sellPrice = posinfo.PriceOpen();
+        sellStopLoss = posinfo.StopLoss();
+      }
+      else if(posinfo.PositionType() == POSITION_TYPE_BUY){
+        ++buyPositionCount;
+        double volume = posinfo.Volume();
+        totalSellLots += volume;
+        totalBuyProfit += posinfo.Profit() + posinfo.Comment() + posinfo.Swap();
+        sellPrice = posinfo.PriceOpen();
+        sellStopLoss = posinfo.StopLoss();
+      }
+    }
+  }
+
+  return(0);
 }
