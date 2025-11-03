@@ -164,7 +164,7 @@ int OnInit(){
 
     //show the display panel
     if(DisplaySwitch){
-      //CreateDisplayPanel();
+      CreateDisplayPanel();
     }
 
   
